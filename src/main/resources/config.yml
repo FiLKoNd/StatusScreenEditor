@@ -1,0 +1,4 @@
+town-processor-enabled: true
+nation-processor-enabled: true
+resident-processor-enabled: true
+townblock-processor-enabled: true
