@@ -4,3 +4,7 @@ main: com.filkond.sseditor.StatusScreenEditor
 api-version: '1.20'
 depend:
   - Towny
+commands:
+  statusscreeneditor:
+    aliases: [sse, screeneditor]
+    permission: statusscreeneditor.use

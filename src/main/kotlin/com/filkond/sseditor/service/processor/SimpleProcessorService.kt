@@ -4,7 +4,7 @@ import com.filkond.sseditor.processor.impl.NationProcessor
 import com.filkond.sseditor.processor.impl.ResidentProcessor
 import com.filkond.sseditor.processor.impl.TownProcessor
 import com.filkond.sseditor.processor.impl.TownblockProcessor
-import com.filkond.sseditor.service.ConfigService
+import com.filkond.sseditor.service.config.SimpleConfigService
 import com.filkond.sseditor.service.Reloadable
 import com.palmergames.bukkit.towny.event.statusscreen.NationStatusScreenEvent
 import com.palmergames.bukkit.towny.event.statusscreen.ResidentStatusScreenEvent
@@ -13,13 +13,13 @@ import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent
 import java.util.logging.Logger
 
 class SimpleProcessorService(
-    configService: ConfigService,
+    private val configService: SimpleConfigService,
     private val logger: Logger
 ) : ProcessorService, Reloadable {
-    private val townProcessor = TownProcessor(configService.getProcessorConfig("town")!!)
-    private val nationProcessor = NationProcessor(configService.getProcessorConfig("nation")!!)
-    private val residentProcessor = ResidentProcessor(configService.getProcessorConfig("resident")!!)
-    private val townBlockProcessor = TownblockProcessor(configService.getProcessorConfig("townblock")!!)
+    private lateinit var townProcessor: TownProcessor
+    private lateinit var nationProcessor: NationProcessor
+    private lateinit var residentProcessor: ResidentProcessor
+    private lateinit var townBlockProcessor: TownblockProcessor
 
     override fun processEvent(event: TownStatusScreenEvent) {
         val lines = townProcessor.getProcessedLines(event.town)
@@ -30,6 +30,7 @@ class SimpleProcessorService(
             logger.warning("Result of town processor is not a collection")
         }
     }
+
     override fun processEvent(event: NationStatusScreenEvent) {
         val lines = nationProcessor.getProcessedLines(event.nation)
         if (lines.isNotEmpty()) {
@@ -60,7 +61,15 @@ class SimpleProcessorService(
         }
     }
 
+    private fun load() {
+        townProcessor = TownProcessor(configService.getProcessorConfig("town")!!)
+        nationProcessor = NationProcessor(configService.getProcessorConfig("nation")!!)
+        residentProcessor = ResidentProcessor(configService.getProcessorConfig("resident")!!)
+        townBlockProcessor = TownblockProcessor(configService.getProcessorConfig("townblock")!!)
+    }
+
     override fun reload() {
-        TODO("Not yet implemented")
+        configService.reload()
+        load()
     }
 }
