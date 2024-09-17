@@ -21,6 +21,10 @@ class SimpleProcessorService(
     private lateinit var residentProcessor: ResidentProcessor
     private lateinit var townBlockProcessor: TownblockProcessor
 
+    init {
+        load()
+    }
+
     override fun processEvent(event: TownStatusScreenEvent) {
         val lines = townProcessor.getProcessedLines(event.town)
         if (lines.isNotEmpty()) {
