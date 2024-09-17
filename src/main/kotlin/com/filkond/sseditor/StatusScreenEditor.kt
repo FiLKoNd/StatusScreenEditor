@@ -1,20 +1,21 @@
 package com.filkond.sseditor
 
-import com.filkond.sseditor.config.ProcessorConfig
+import com.filkond.sseditor.ext.walkResources
 import com.filkond.sseditor.service.ConfigService
-import com.filkond.sseditor.service.ProcessorService
+import com.filkond.sseditor.service.processor.SimpleProcessorService
 import org.bukkit.plugin.java.JavaPlugin
 
 class StatusScreenEditor : JavaPlugin() {
     lateinit var configService: ConfigService
-    lateinit var processorService: ProcessorService
+    lateinit var processorService: SimpleProcessorService
     override fun onEnable() {
         saveDefaultConfig()
-        saveResource("processors/town/town-processor.bsh", false)
-        saveResource("processors/town/town-processor.yml", false)
+        walkResources("processors/", 2) {
+            saveResource(it.toString(), false)
+        }
 
         configService = ConfigService(dataFolder.absolutePath)
-        processorService = ProcessorService(configService)
+        processorService = SimpleProcessorService(configService, logger)
 
         server.pluginManager.registerEvents(TownyListener(processorService), this)
     }

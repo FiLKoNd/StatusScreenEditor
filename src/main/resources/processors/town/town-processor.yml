@@ -1,4 +1,0 @@
-content:
-  - "<---${return town.getName()}--->"
-  - "Residents: ${return town.getNumResidents()}"
-  - "TownBlocks: ${return town.getNumTownBlocks()}"
