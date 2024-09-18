@@ -23,7 +23,10 @@ abstract class AbstractProcessor<T : TownyObject> {
 
     @Throws(EvalError::class)
     private fun eval(entity: T): Collection<String> {
-        val result = getInterpreter(entity).eval(ctx)
+        val interpreter = getInterpreter(entity)
+        interpreter.set("out", ArrayList<String>())
+        interpreter.eval(ctx)
+        val result = interpreter.get("out")
         if (result !is Collection<*>) {
             return emptyList()
         }

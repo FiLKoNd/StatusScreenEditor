@@ -1,6 +1,6 @@
 package com.filkond.sseditor.ext
 
-import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.java.JavaPlugin
 import java.io.IOException
 import java.net.URI
 import java.net.URISyntaxException
@@ -9,8 +9,8 @@ import java.util.function.Consumer
 
 
 @Throws(URISyntaxException::class, IOException::class)
-fun Plugin.walkResources(path: String, depth: Int, consumer: Consumer<Path>) {
-    val uri: URI = this.javaClass.getResource(path)?.toURI() ?: return
+fun JavaPlugin.walkResources(path: String, depth: Int, consumer: Consumer<Path>) {
+    val uri: URI = this.javaClass.classLoader.getResource(path)?.toURI() ?: return
     var fileSystem: FileSystem? = null
     val myPath: Path
     try {
@@ -21,7 +21,7 @@ fun Plugin.walkResources(path: String, depth: Int, consumer: Consumer<Path>) {
             myPath = Paths.get(uri)
         }
 
-        Files.walk(myPath, depth).use { it.forEach(consumer) }
+        Files.walk(myPath, depth).filter { !it.toString().endsWith(path) }.use { it.forEach(consumer) }
     } finally {
         fileSystem?.close()
     }

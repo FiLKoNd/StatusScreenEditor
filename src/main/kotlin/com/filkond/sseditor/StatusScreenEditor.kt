@@ -12,10 +12,15 @@ class StatusScreenEditor : JavaPlugin() {
     lateinit var processorService: SimpleProcessorService
     override fun onEnable() {
         saveDefaultConfig()
-        walkResources("processors/", 2) { saveResource(it.toString(), false) }
 
-        configService = SimpleConfigService(File(dataFolder, "processors/"))
-        processorService = SimpleProcessorService(configService, logger)
+        walkResources("processors", 1) {
+            if (!File(dataFolder, it.toString()).exists()) {
+                saveResource(it.toString(), false)
+            }
+        }
+
+        configService = SimpleConfigService(File(dataFolder, "processors")).also { it.load() }
+        processorService = SimpleProcessorService(configService, logger).also { it.load() }
 
         getCommand("statusscreeneditor")!!.setExecutor(SSECommand(processorService))
         server.pluginManager.registerEvents(TownyListener(processorService, config), this)
