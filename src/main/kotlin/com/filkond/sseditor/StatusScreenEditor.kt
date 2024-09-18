@@ -17,6 +17,6 @@ class StatusScreenEditor : JavaPlugin() {
         processorService = SimpleProcessorService(configService, logger)
 
         getCommand("statusscreeneditor")!!.setExecutor(SSECommand(processorService))
-        server.pluginManager.registerEvents(TownyListener(processorService), this)
+        server.pluginManager.registerEvents(TownyListener(processorService, config), this)
     }
 }

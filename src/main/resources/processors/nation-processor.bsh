@@ -1,3 +1,5 @@
 test() {
     return "hello";
 }
+
+return test()
