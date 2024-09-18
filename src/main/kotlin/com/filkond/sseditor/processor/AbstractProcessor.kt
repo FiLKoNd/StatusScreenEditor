@@ -1,10 +1,12 @@
 package com.filkond.sseditor.processor
 
+import bsh.EvalError
 import bsh.Interpreter
 import com.palmergames.adventure.text.Component
 import com.palmergames.bukkit.towny.`object`.TownyObject
 import com.palmergames.bukkit.towny.utils.TownyComponents
 import java.io.File
+import kotlin.Throws
 
 @Suppress("UnstableApiUsage")
 abstract class AbstractProcessor<T : TownyObject> {
@@ -16,8 +18,10 @@ abstract class AbstractProcessor<T : TownyObject> {
     constructor(config: File) : this(config.readText())
 
     abstract fun getInterpreter(entity: T): Interpreter
+    @Throws(EvalError::class)
     fun getProcessedLines(entity: T): List<Component> = eval(entity).map { TownyComponents.miniMessage(it) }
 
+    @Throws(EvalError::class)
     private fun eval(entity: T): Collection<String> {
         val result = getInterpreter(entity).eval(ctx)
         if (result !is Collection<*>) {

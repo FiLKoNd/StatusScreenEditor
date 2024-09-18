@@ -5,6 +5,7 @@ import com.filkond.sseditor.ext.walkResources
 import com.filkond.sseditor.service.config.SimpleConfigService
 import com.filkond.sseditor.service.processor.SimpleProcessorService
 import org.bukkit.plugin.java.JavaPlugin
+import java.io.File
 
 class StatusScreenEditor : JavaPlugin() {
     lateinit var configService: SimpleConfigService
@@ -13,7 +14,7 @@ class StatusScreenEditor : JavaPlugin() {
         saveDefaultConfig()
         walkResources("processors/", 2) { saveResource(it.toString(), false) }
 
-        configService = SimpleConfigService(dataFolder)
+        configService = SimpleConfigService(File(dataFolder, "processors/"))
         processorService = SimpleProcessorService(configService, logger)
 
         getCommand("statusscreeneditor")!!.setExecutor(SSECommand(processorService))
